@@ -68,7 +68,7 @@ input, button {
   outline: none;
   background: transparent;
 }
-.search {
+.fsearch {
     color: #d1e2d4;
 }
 ::placeholder {

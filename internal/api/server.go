@@ -134,9 +134,20 @@ func StartServer() {
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/", func(c *gin.Context) {
+		searchQuery := c.DefaultQuery("fsearch", "")
+		var result []Service
+
+		for _, service := range services {
+			if strings.Contains(strings.ToLower(service.Name), strings.ToLower(searchQuery)) {
+				result = append(result, service)
+			}
+		}
+
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"services": services,
+			"services": result,
+			"fsearch":  searchQuery,
 		})
+
 	})
 
 	r.GET("/service/:id", func(c *gin.Context) {
@@ -152,20 +163,6 @@ func StartServer() {
 		c.HTML(http.StatusOK, "info.tmpl", service)
 	})
 
-	r.GET("/search", func(c *gin.Context) {
-		searchQuery := c.DefaultQuery("fsearch", "")
-		var result []Service
-
-		for _, service := range services {
-			if strings.Contains(strings.ToLower(service.Name), strings.ToLower(searchQuery)) {
-				result = append(result, service)
-			}
-		}
-
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"services": result,
-		})
-	})
 	r.Static("/image", "./resources/image")
 	r.Static("/css", "./resources/css")
 
