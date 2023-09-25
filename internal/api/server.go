@@ -216,7 +216,7 @@ func StartServer() {
 
 	})
 
-	r.GET("/service/:id", func(c *gin.Context) {
+	r.GET("/period/:id", func(c *gin.Context) {
 		id, err := strconv.Atoi(c.Param("id"))
 
 		if err != nil {
@@ -226,7 +226,7 @@ func StartServer() {
 		}
 
 		service := services[id-1]
-		c.HTML(http.StatusOK, "info.tmpl", service)
+		c.HTML(http.StatusOK, "period.tmpl", service)
 	})
 
 	r.Static("/image", "./resources/image")
