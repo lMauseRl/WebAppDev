@@ -3,11 +3,17 @@ package main
 import (
 	"log"
 
-	"awesomeProject/internal/api"
+	app "github.com/lMauseRl/WebAppDev/internal/api"
 )
 
 func main() {
-	log.Println("Application start")
-	api.StartServer()
-	log.Println("Application terminated")
+	log.Println("Application start!")
+
+	application, err := app.New()
+	if err != nil {
+		log.Fatal(err)
+	}
+	application.StartServer()
+
+	log.Println("Application terminated!")
 }

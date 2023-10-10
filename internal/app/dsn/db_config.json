@@ -1,0 +1,7 @@
+{
+    "DBHost": "localhost",
+    "DBPort": "5433",
+    "DBUser": "postgres",
+    "DBPass": "1111",
+    "DBName": "Geo_periods"
+  }
