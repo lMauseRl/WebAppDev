@@ -25,7 +25,7 @@ func New(dsn string) (*Repository, error) {
 func (r *Repository) GetPeriodsByID(id int) (*ds.Periods, error) {
 	periods := &ds.Periods{}
 
-	err := r.db.First(periods, "id = ?", id).Error
+	err := r.db.First(periods, "id_period = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (r *Repository) GetPeriodsByID(id int) (*ds.Periods, error) {
 }
 
 func (r *Repository) DeletePeriods(id int) error {
-	return r.db.Exec("UPDATE periods SET status = 'удалён' WHERE id=?", id).Error
+	return r.db.Exec("UPDATE periods SET status = 'удалён' WHERE id_period=?", id).Error
 }
 
 func (r *Repository) CreatePeriods(periods ds.Periods) error {
@@ -43,10 +43,9 @@ func (r *Repository) CreatePeriods(periods ds.Periods) error {
 
 func (r *Repository) GetAllPeriods() ([]ds.Periods, error) {
 	var periods []ds.Periods
-	err := r.db.Find(&periods, "status = 'действует'").Error
+	err := r.db.Order("id_period").Find(&periods, "status = 'действует'").Error
 	if err != nil {
 		return nil, err
 	}
-
 	return periods, nil
 }

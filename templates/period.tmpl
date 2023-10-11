@@ -14,8 +14,11 @@
         Геологические периоды
       </h3>
       <div class="table">
-        <img class="img-cl" src="{{.Image}}" alt="">
-        <p>Порядковый номер события: {{.Id}}<br><br>Название:{{.Name}}<br><br>Сводка:<br>{{.Description}}<br><br>Временной отрезок:<br>{{.Age}}<br><br></p>
+        <img class="img-cl" src="{{.Photo}}" alt="">
+        <p>Порядковый номер события: {{.Id_period}}<br><br>Название:{{.Name}}<br><br>Сводка:<br>{{.Description}}<br><br>Временной отрезок:<br>{{.Age}}<br><br></p>
+        <p><form action="/delete/{{.Id_period}}" method="POST">
+          <button type="delete" class="delete">Delete</button>
+        </form></p>
       </div>
     </section>  
   </body>

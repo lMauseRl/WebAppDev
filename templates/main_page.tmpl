@@ -14,15 +14,15 @@
         Геологические периоды
       </h3>
       <form action="/" method="get">
-        <input class="fsearch" id="fsearch" name="fsearch" type="text" placeholder="Поиск: {{.fsearch}}">
+        <input class="fsearch" id="period" name="period" type="text" placeholder="Поиск: {{.search_text}}">
         <button type="submit"></button>
       </form>
       <div class="table">
           {{range .services}}
-          <a class="container" href="/period/{{.Id}}" style="text-decoration: none; color: #537459">
+          <a class="container" href="/period/{{.Id_period}}" style="text-decoration: none; color: #537459">
             <div class="internal">
-              <h4 class="period">{{.Name}}</h4>
-              <img class="image" src="{{.Image}}" alt="">
+              <h4 class="period_name">{{.Name}}</h4>
+              <img class="image" src="{{.Photo}}" alt="">
               <p>{{.Description}}<br><br>{{.Age}}</p>
             </div>
           </a>

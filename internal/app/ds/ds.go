@@ -3,11 +3,10 @@ package ds
 import "time"
 
 type Periods struct {
-	Id          uint `gorm:"primarykey"`
+	Id_period   uint `gorm:"primarykey"`
 	Name        string
 	Description string
-	Age_start   float32
-	Age_end     float32
+	Age         string
 	Photo       string
 	Status      string
 }

@@ -28,6 +28,7 @@ h1 {
 
 h4 {
     text-align: center;
+    color:#537459;
 }
 
 .container {
@@ -67,8 +68,9 @@ input, button {
   border: none;
   outline: none;
   background: transparent;
+  color: #d1e2d4;
 }
-.fsearch {
+.period {
     color: #d1e2d4;
 }
 ::placeholder {
@@ -78,6 +80,7 @@ input {
   width: 100%;
   height: 42px;
   padding-left: 15px;
+  color: #d1e2d4;
 }
 button {
   height: 42px;
@@ -86,10 +89,20 @@ button {
   top: 0;
   right: 0;
   cursor: pointer;
+  color: #d1e2d4;
 }
 button:before {
   content: "\f002";
   font-family: 'FontAwesome';
   font-size: 16px;
   color: #d1e2d4;
+}
+input:focus{
+  color: #d1e2d4;
+}
+.text{
+  color: #d1e2d4;
+}
+.delete{
+  color: #537459;
 }

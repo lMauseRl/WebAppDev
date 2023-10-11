@@ -201,8 +201,8 @@ func (a *Application) StartServer() {
 
 	r := gin.Default()
 
-	r.Static("/styles", "./resources/css")
-	r.Static("/img", "./resources/image")
+	r.Static("/image", "./resources/image")
+	r.Static("/css", "./resources/css")
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/", func(c *gin.Context) {
@@ -212,7 +212,7 @@ func (a *Application) StartServer() {
 			log.Printf("cant get product by id %v", err)
 			return
 		}
-		searchQuery := c.DefaultQuery("fsearch", "")
+		searchQuery := c.DefaultQuery("period", "")
 
 		if searchQuery == "" {
 			c.HTML(http.StatusOK, "main_page.tmpl", gin.H{
