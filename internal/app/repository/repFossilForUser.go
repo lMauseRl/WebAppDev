@@ -8,15 +8,13 @@ import (
 	"github.com/lud0m4n/WebAppDev/internal/app/ds"
 )
 
-func (r *Repository) GetFossilForUser(searchSpecies, startFormationDate, endFormationDate, fossilStatus string, userID uint) ([]ds.Fossilperiod, error) {
-	searchSpecies = strings.ToUpper(searchSpecies + "%")
+func (r *Repository) GetFossilForUser(searchSpecies, startFormationDate, endFormationDate, fossilStatus string, userID uint) ([]ds.FossilRequest, error) {
+	searchSpecies = strings.ToLower(searchSpecies + "%")
 	fossilStatus = strings.ToLower(fossilStatus + "%")
 
 	// Построение основного запроса для получения ископаемых.
 	query := r.db.Table("fossils").
-		Select("DISTINCT fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status, users.full_name").
-		Joins("JOIN fossilperiods ON fossils.id_fossil = fossilperiods.fossil_id").
-		Joins("JOIN periods ON periods.id_period = fossilperiods.period_id").
+		Select("fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status, users.full_name").
 		Joins("JOIN users ON users.id_user = fossils.user_id").
 		Where("fossils.status LIKE ? AND fossils.species LIKE ? AND fossils.user_id = ? AND fossils.status != ?", fossilStatus, searchSpecies, userID, ds.FOSSIL_STATUS_DELETED)
 
@@ -26,8 +24,8 @@ func (r *Repository) GetFossilForUser(searchSpecies, startFormationDate, endForm
 	}
 
 	// Выполнение запроса и сканирование результатов в слайс fossil.
-	var fossils []ds.Fossilperiod
-	if err := query.Find(&fossils).Error; err != nil {
+	var fossils []ds.FossilRequest
+	if err := query.Scan(&fossils).Error; err != nil {
 		return nil, errors.New("ошибка получения ископаемых")
 	}
 	return fossils, nil
@@ -45,12 +43,7 @@ func (r *Repository) GetFossilByIDForUser(fossilID int, userID uint) (map[string
 	}
 
 	// Получение периодов по указанному fossilID.
-	periods, err := r.GetPeriodsBySpecies(fossil["species"].(string))
-	if err != nil {
-		return nil, err
-	}
 	// Добавление информации о периоде в поле "periods" внутри останков.
-	fossil["periods"] = periods
 
 	return fossil, nil
 }
@@ -71,7 +64,7 @@ func (r *Repository) DeleteFossilForUser(fossilID int, userID uint) error {
 	tx := r.db.Begin()
 
 	// Удаляем связанные записи из таблицы-множества (fossilperiods)
-	if err := tx.Where("id_fossil = ?", fossilID).Delete(&ds.Fossilperiod{}).Error; err != nil {
+	if err := tx.Where("fossil_id = ?", fossilID).Delete(&ds.Fossilperiod{}).Error; err != nil {
 		tx.Rollback()
 		return errors.New("ошибка удаления связей из таблицы-множества")
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handler) AddPeriodImage(c *gin.Context) {
-	baggageID, err := strconv.Atoi(c.Param("baggage_id"))
+	periodID, err := strconv.Atoi(c.Param("id_period"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "недопсутимый ИД периода"})
 		return
@@ -39,7 +39,7 @@ func (h *Handler) AddPeriodImage(c *gin.Context) {
 	contentType := image.Header.Get("Content-Type")
 
 	// Вызов функции репозитория для добавления изображения
-	err = h.Repo.AddPeriodImage(baggageID, imageBytes, contentType)
+	err = h.Repo.AddPeriodImage(periodID, imageBytes, contentType)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

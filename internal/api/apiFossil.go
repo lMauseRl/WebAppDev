@@ -19,9 +19,9 @@ func (h *Handler) GetFossil(c *gin.Context) {
 	fossilStatus := c.DefaultQuery("fossilStatus", "")
 
 	// Выбор соответствующего метода репозитория в зависимости от роли пользователя
-	var fossil []ds.Fossilperiod
+	var fossil []ds.FossilRequest
 	var err error
-	if authInstance.Role == "moderator" {
+	if authInstance.Role != "" { //модератор
 		// Получение искпоаемых для модератора
 		fossil, err = h.Repo.GetFossilForModerator(searchSpecies, startFormationDate, endFormationDate, fossilStatus, authInstance.UserID)
 	} else {
@@ -50,7 +50,7 @@ func (h *Handler) GetFossilByID(c *gin.Context) {
 	// Получение информации о ископаемом в зависимости от роли пользователя
 	var fossil map[string]interface{}
 	var repoErr error
-	if authInstance.Role == "moderator" {
+	if authInstance.Role != "" { //==модератор
 		// Получение ископаемого для модератора
 		fossil, repoErr = h.Repo.GetFossilByIDForModerator(fossilID, authInstance.UserID)
 	} else {
@@ -83,7 +83,7 @@ func (h *Handler) DeleteFossil(c *gin.Context) {
 	fossilStatus := c.DefaultQuery("fossilStatus", "")
 
 	// Проверка, является ли текущий пользователь пользователем (не модератором)
-	if authInstance.Role == "moderator" {
+	if authInstance.Role != "" { //модератор
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "данный запрос недоступен для модератора"})
 		return
 	}
@@ -125,7 +125,7 @@ func (h *Handler) UpdateFossil(c *gin.Context) {
 
 	// Проверка, является ли пользователь авторизованным и имеет ли права на обновление ископаемого
 	var repoErr error
-	if authInstance.Role == "moderator" {
+	if authInstance.Role == "" { //модеротор
 		// Обновление ископаемого для модератора
 		repoErr = h.Repo.UpdateFossilForModerator(fossilID, authInstance.UserID, &updatedFossilRequest)
 		if repoErr != nil {
@@ -167,7 +167,7 @@ func (h *Handler) UpdateFossilStatusForUser(c *gin.Context) {
 	}
 
 	// Проверка роли пользователя
-	if authInstance.Role == "user" {
+	if authInstance.Role == "" { //юзер
 		// Пользователь может обновлять только свои ископаемого
 		err = h.Repo.UpdateFossilStatusForUser(fossilID, authInstance.UserID)
 		if err != nil {
@@ -181,7 +181,7 @@ func (h *Handler) UpdateFossilStatusForUser(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"message": "Ископаемое успешно обновлено", "fossil": updatedFossil})
-	} else if authInstance.Role == "moderator" {
+	} else if authInstance.Role == "" { //модератор
 		// Модератор не имеет права обновлять статус искпоаемых пользователя
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "данный запрос доступен только пользователю"})
 		return
@@ -205,7 +205,7 @@ func (h *Handler) UpdateFossilStatusForModerator(c *gin.Context) {
 	}
 
 	// Проверка роли пользователя
-	if authInstance.Role == "moderator" {
+	if authInstance.Role == "" { //модератор
 		// Пользователь может обновлять только свои ископаемого
 		err = h.Repo.UpdateFossilStatusForModerator(fossilID, authInstance.UserID, &updateRequest)
 		if err != nil {
@@ -219,7 +219,7 @@ func (h *Handler) UpdateFossilStatusForModerator(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"message": "Ископаемое успешно обновлена", "fossil": updatedFossil})
-	} else if authInstance.Role == "user" {
+	} else if authInstance.Role == "" { //юзер
 		// Модератор не имеет права обновлять статус искпоаемых пользователя
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "данный запрос доступен только модератору"})
 		return

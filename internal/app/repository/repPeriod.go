@@ -31,6 +31,7 @@ func (r *Repository) GetPeriods(searchName string, userID uint) (map[string]inte
 	// Создаем объект JSON для включения id_fossil и periods
 	result := make(map[string]interface{})
 	result["periods"] = periods
+	result["id_fossil"] = fossilID
 
 	return result, nil
 }

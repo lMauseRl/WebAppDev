@@ -8,15 +8,15 @@ import (
 	"github.com/lud0m4n/WebAppDev/internal/app/ds"
 )
 
-func (r *Repository) GetFossilForModerator(searchSpecies, startFormationDate, endFormationDate, fossilStatus string, moderatorID uint) ([]ds.Fossilperiod, error) {
+func (r *Repository) GetFossilForModerator(searchSpecies, startFormationDate, endFormationDate, fossilStatus string, moderatorID uint) ([]ds.FossilRequest, error) {
 	searchSpecies = strings.ToUpper(searchSpecies + "%")
 	fossilStatus = strings.ToLower(fossilStatus + "%")
 
 	// Построение основного запроса для получения ископаемых.
 	query := r.db.Table("fossils").
-		Select("DISTINCT fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
+		Select("fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
 		Joins("JOIN fossilperiods ON fossils.id_fossil = fossilperiods.fossil_id").
-		Joins("JOIN period ON period.id_period = fossilperiods.fossil_id").
+		Joins("JOIN periods ON periods.id_period = fossilperiods.fossil_id").
 		Where("fossils.status LIKE ? AND fossils.species LIKE ? AND fossils.moderator_id = ?", fossilStatus, searchSpecies, moderatorID)
 	// Добавление условия фильтрации по дате формирования, если она указана.
 	if startFormationDate != "" && endFormationDate != "" {
@@ -24,7 +24,7 @@ func (r *Repository) GetFossilForModerator(searchSpecies, startFormationDate, en
 	}
 
 	// Выполнение запроса и сканирование результатов в структуру fossil.
-	var fossil []ds.Fossilperiod
+	var fossil []ds.FossilRequest
 	if err := query.Scan(&fossil).Error; err != nil {
 		return nil, errors.New("ошибка получения ископаемых")
 	}
@@ -95,7 +95,7 @@ func (r *Repository) UpdateFossilStatusForModerator(fossilID int, moderatorID ui
 	}
 
 	// Проверяем, что новый статус является "завершен" или "отклонен"
-	if updateRequest.Status != ds.FOSSIL_STATUS_COMPLETED && updateRequest.Status != ds.FOSSIL_STATUS_REJECTED {
+	if updateRequest.Status == ds.FOSSIL_STATUS_COMPLETED && updateRequest.Status == ds.FOSSIL_STATUS_REJECTED {
 		return errors.New("текущий статус останка уже завершен или отклонен")
 	}
 

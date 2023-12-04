@@ -120,7 +120,7 @@ func (h *Handler) UpdatePeriod(c *gin.Context) {
 // м-м
 func (h *Handler) AddPeriodToFossil(c *gin.Context) {
 	authInstance := auth.GetAuthInstance()
-	searchName := c.DefaultQuery("searchName", "")
+	//searchName := c.DefaultQuery("searchName", "")
 	// Получаем параметры из URL
 	periodID, err := strconv.Atoi(c.Param("id_period"))
 	if err != nil {
@@ -135,7 +135,7 @@ func (h *Handler) AddPeriodToFossil(c *gin.Context) {
 	}
 
 	// Получаем обновленный список периодов
-	periods, err := h.Repo.GetPeriods(searchName, authInstance.UserID)
+	periods, err := h.Repo.GetPeriodByID(periodID, authInstance.UserID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
