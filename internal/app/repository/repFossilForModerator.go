@@ -95,7 +95,7 @@ func (r *Repository) UpdateFossilStatusForModerator(fossilID int, moderatorID ui
 	}
 
 	// Проверяем, что новый статус является "завершен" или "отклонен"
-	if updateRequest.Status == ds.FOSSIL_STATUS_COMPLETED && updateRequest.Status == ds.FOSSIL_STATUS_REJECTED {
+	if updateRequest.Status == ds.FOSSIL_STATUS_COMPLETED || updateRequest.Status == ds.FOSSIL_STATUS_REJECTED {
 		return errors.New("текущий статус останка уже завершен или отклонен")
 	}
 
