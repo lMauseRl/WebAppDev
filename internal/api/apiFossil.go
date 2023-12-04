@@ -19,7 +19,7 @@ func (h *Handler) GetFossil(c *gin.Context) {
 	fossilStatus := c.DefaultQuery("fossilStatus", "")
 
 	// Выбор соответствующего метода репозитория в зависимости от роли пользователя
-	var fossil []ds.FossilPeriod
+	var fossil []ds.Fossilperiod
 	var err error
 	if authInstance.Role == "moderator" {
 		// Получение искпоаемых для модератора

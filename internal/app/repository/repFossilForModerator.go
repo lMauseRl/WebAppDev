@@ -8,23 +8,23 @@ import (
 	"github.com/lud0m4n/WebAppDev/internal/app/ds"
 )
 
-func (r *Repository) GetFossilForModerator(searchSpecies, startFormationDate, endFormationDate, fossilStatus string, moderatorID uint) ([]ds.FossilPeriod, error) {
+func (r *Repository) GetFossilForModerator(searchSpecies, startFormationDate, endFormationDate, fossilStatus string, moderatorID uint) ([]ds.Fossilperiod, error) {
 	searchSpecies = strings.ToUpper(searchSpecies + "%")
 	fossilStatus = strings.ToLower(fossilStatus + "%")
 
 	// Построение основного запроса для получения ископаемых.
-	query := r.db.Table("fossil").
-		Select("DISTINCT fossil.species, fossil.creation_date, fossil.formation_date, fossil.completion_date, fossil.status").
-		Joins("JOIN fossilperiod ON fossil.id_fossil = fossilperiod.fossil_id").
-		Joins("JOIN period ON period.id_period = fossilperiod.fossil_id").
-		Where("fossil.status LIKE ? AND fossil.species LIKE ? AND fossil.moderator_id = ?", fossilStatus, searchSpecies, moderatorID)
+	query := r.db.Table("fossils").
+		Select("DISTINCT fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
+		Joins("JOIN fossilperiods ON fossils.id_fossil = fossilperiods.fossil_id").
+		Joins("JOIN period ON period.id_period = fossilperiods.fossil_id").
+		Where("fossils.status LIKE ? AND fossils.species LIKE ? AND fossils.moderator_id = ?", fossilStatus, searchSpecies, moderatorID)
 	// Добавление условия фильтрации по дате формирования, если она указана.
 	if startFormationDate != "" && endFormationDate != "" {
 		query = query.Where("fossil.formation_date BETWEEN ? AND ?", startFormationDate, endFormationDate)
 	}
 
 	// Выполнение запроса и сканирование результатов в структуру fossil.
-	var fossil []ds.FossilPeriod
+	var fossil []ds.Fossilperiod
 	if err := query.Scan(&fossil).Error; err != nil {
 		return nil, errors.New("ошибка получения ископаемых")
 	}
@@ -35,9 +35,9 @@ func (r *Repository) GetFossilByIDForModerator(fossilID int, moderatorID uint) (
 	var fossil map[string]interface{}
 	// Получение информации о останках по fossilID.
 	if err := r.db.
-		Table("fossil").
-		Select("fossil.species, fossil.creation_date, fossil.formation_date, fossil.completion_date, fossil.status").
-		Where("fossil.status != ? AND fossil.id_fossil = ? AND fossil.moderator_id = ?", ds.FOSSIL_STATUS_DELETED, fossilID, moderatorID).
+		Table("fossils").
+		Select("fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
+		Where("fossils.status != ? AND fossils.id_fossil = ? AND fossils.moderator_id = ?", ds.FOSSIL_STATUS_DELETED, fossilID, moderatorID).
 		Scan(&fossil).Error; err != nil {
 		return nil, errors.New("ошибка получения останков по ИД")
 	}
@@ -90,17 +90,17 @@ func (r *Repository) UpdateFossilStatusForModerator(fossilID int, moderatorID ui
 	}
 
 	// Проверяем, что текущий статус ископаемого - "в работе"
-	if fossil.FossilStatus != ds.FOSSIL_STATUS_WORK {
+	if fossil.Status != ds.FOSSIL_STATUS_WORK {
 		return errors.New("текущий статус останка еще не в работе")
 	}
 
 	// Проверяем, что новый статус является "завершен" или "отклонен"
-	if updateRequest.FossilStatus != ds.FOSSIL_STATUS_COMPLETED && updateRequest.FossilStatus != ds.FOSSIL_STATUS_REJECTED {
+	if updateRequest.Status != ds.FOSSIL_STATUS_COMPLETED && updateRequest.Status != ds.FOSSIL_STATUS_REJECTED {
 		return errors.New("текущий статус останка уже завершен или отклонен")
 	}
 
-	// Обновляем только поле FossilStatus из JSON-запроса
-	fossil.FossilStatus = updateRequest.FossilStatus
+	// Обновляем только поле Status из JSON-запроса
+	fossil.Status = updateRequest.Status
 
 	fossil.CompletionDate = time.Now().In(time.FixedZone("MSK", 3*60*60))
 

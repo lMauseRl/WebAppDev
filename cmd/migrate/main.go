@@ -17,7 +17,7 @@ func main() {
 	}
 
 	// Явно мигрировать только нужные таблицы
-	err = db.AutoMigrate(&ds.Period{}, &ds.Fossil{}, &ds.User{}, &ds.FossilPeriod{})
+	err = db.AutoMigrate(&ds.Period{}, &ds.Fossil{}, &ds.User{}, &ds.Fossilperiod{})
 	if err != nil {
 		panic("cant migrate db")
 	}

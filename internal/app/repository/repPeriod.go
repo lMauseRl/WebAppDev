@@ -12,8 +12,8 @@ func (r *Repository) GetPeriods(searchName string, userID uint) (map[string]inte
 	searchName = strings.ToUpper(searchName + "%")
 	var fossilID uint
 	if err := r.db.
-		Table("fossil").
-		Select("fossil.id_fossil").
+		Table("fossils").
+		Select("fossils.id_fossil").
 		Where("user_id = ? AND status = ?", userID, ds.FOSSIL_STATUS_DRAFT).
 		Take(&fossilID).Error; err != nil {
 		//return nil, errors.New("ошибка нахождения id_fossil черновика")
@@ -30,7 +30,6 @@ func (r *Repository) GetPeriods(searchName string, userID uint) (map[string]inte
 
 	// Создаем объект JSON для включения id_fossil и periods
 	result := make(map[string]interface{})
-	result["id_fossil"] = fossilID
 	result["periods"] = periods
 
 	return result, nil
@@ -55,9 +54,9 @@ func (r *Repository) GetPeriodsBySpecies(fossilSpecies string) ([]map[string]int
 	if err := r.db.
 		Table("periods").
 		Select("periods.id_period, periods.name, periods.description, periods.age, periods.status, periods.photo").
-		Joins("JOIN fossilperiod ON periods.id_period = fossilperiod.period_id").
-		Joins("JOIN fossil ON fossilperiod.fossil_id = fossil.id_fossil").
-		Where("periods.status = ? AND fossil.species = ?", ds.PERIOD_STATUS_ACTIVE, fossilSpecies).
+		Joins("JOIN fossilperiods ON periods.id_period = fossilperiods.period_id").
+		Joins("JOIN fossils ON fossilperiods.fossil_id = fossils.id_fossil").
+		Where("periods.status = ? AND fossils.species = ?", ds.PERIOD_STATUS_ACTIVE, fossilSpecies).
 		Scan(&periods).Error; err != nil {
 		return nil, errors.New("ошибка нахождения списка периодов по названию ископаемого")
 	}
@@ -76,11 +75,11 @@ func (r *Repository) CreatePeriod(periods *ds.Period) error {
 
 func (r *Repository) DeletePeriod(periodID int, userID uint) error {
 	// Удаление изображения из MinIO
-	err := r.minioClient.RemoveServiceImage(periodID)
-	if err != nil {
-		// Обработка ошибки удаления изображения из MinIO, если необходимо
-		return err
-	}
+	// err := r.minioClient.RemoveServiceImage(periodID)
+	// if err != nil {
+	// 	// Обработка ошибки удаления изображения из MinIO, если необходимо
+	// 	return err
+	// }
 	return r.db.Exec("UPDATE periods SET status = ? WHERE id_period = ?", ds.PERIOD_STATUS_DELETED, periodID).Error
 }
 
@@ -105,7 +104,7 @@ func (r *Repository) AddPeriodToFossil(periodID uint, userID uint, moderatorID u
 		// Если нет заявки со статусом "черновик", создаем новую
 		currentTime := time.Now().In(time.FixedZone("UTC+3", 3*60*60)) // Часовой пояс Москвы
 		latestDraftFossil = ds.Fossil{
-			FossilStatus: ds.FOSSIL_STATUS_DRAFT,
+			Status:       ds.FOSSIL_STATUS_DRAFT,
 			CreationDate: currentTime,
 			UserID:       userID, // Устанавливаем ID пользователя для заявки
 			ModeratorID:  moderatorID,
@@ -116,9 +115,9 @@ func (r *Repository) AddPeriodToFossil(periodID uint, userID uint, moderatorID u
 	}
 
 	// Создаем связь между периодом и заявкой в промежуточной таблице
-	relation := &ds.FossilPeriod{
+	relation := &ds.Fossilperiod{
 		PeriodID: periodID,
-		FossilID: latestDraftFossil.FossilID,
+		FossilID: latestDraftFossil.IDFossil,
 	}
 
 	// Начинаем транзакцию
@@ -151,11 +150,11 @@ func (r *Repository) RemovePeriodFromFossil(periodID uint, userID uint) error {
 	}()
 
 	// Поиск связи между периодом и ископаемым в базе данных
-	var relation ds.FossilPeriod
+	var relation ds.Fossilperiod
 
 	// Проверяем, принадлежит ли период текущему пользователю и находится ли он в статусе "черновик"
-	if err := tx.Joins("JOIN fossil ON fossilperiod.fossil_id = fossil.id_fossil").
-		Where("fossilperiod.period_id = ? AND fossil.user_id = ? AND fossil.status = ?", periodID, userID, ds.FOSSIL_STATUS_DRAFT).
+	if err := tx.Joins("JOIN fossils ON fossilperiods.fossil_id = fossils.id_fossil").
+		Where("fossilperiods.period_id = ? AND fossils.user_id = ? AND fossils.status = ?", periodID, userID, ds.FOSSIL_STATUS_DRAFT).
 		First(&relation).Error; err != nil {
 		tx.Rollback()
 		return errors.New("период не принадлежит пользователю или находится не в статусе черновик")

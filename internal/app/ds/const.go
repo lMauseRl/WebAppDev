@@ -1,7 +1,7 @@
 package ds
 
 const (
-	PERIOD_STATUS_ACTIVE  = "активен"
+	PERIOD_STATUS_ACTIVE  = "действует"
 	PERIOD_STATUS_DELETED = "удален"
 
 	FOSSIL_STATUS_DRAFT     = "черновик"

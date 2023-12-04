@@ -8,25 +8,25 @@ import (
 	"github.com/lud0m4n/WebAppDev/internal/app/ds"
 )
 
-func (r *Repository) GetFossilForUser(searchSpecies, startFormationDate, endFormationDate, fossilStatus string, userID uint) ([]ds.FossilPeriod, error) {
+func (r *Repository) GetFossilForUser(searchSpecies, startFormationDate, endFormationDate, fossilStatus string, userID uint) ([]ds.Fossilperiod, error) {
 	searchSpecies = strings.ToUpper(searchSpecies + "%")
 	fossilStatus = strings.ToLower(fossilStatus + "%")
 
 	// Построение основного запроса для получения ископаемых.
-	query := r.db.Table("fossil").
-		Select("DISTINCT fossil.id_fossil, fossil.genus, fossil.species, fossil.creation_date, fossil.formation_date, fossil.completion_date, fossil.status, users.full_name").
-		Joins("JOIN fossilperiod ON fossil.id_fossil = fossilperiods.id_fossil").
+	query := r.db.Table("fossils").
+		Select("DISTINCT fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status, users.full_name").
+		Joins("JOIN fossilperiods ON fossils.id_fossil = fossilperiods.fossil_id").
 		Joins("JOIN periods ON periods.id_period = fossilperiods.period_id").
-		Joins("JOIN users ON users.user_id = fossil.user_id").
-		Where("fossil.status LIKE ? AND fossil.species LIKE ? AND fossil.user_id = ? AND fossil.status != ?", fossilStatus, searchSpecies, userID, ds.FOSSIL_STATUS_DELETED)
+		Joins("JOIN users ON users.id_user = fossils.user_id").
+		Where("fossils.status LIKE ? AND fossils.species LIKE ? AND fossils.user_id = ? AND fossils.status != ?", fossilStatus, searchSpecies, userID, ds.FOSSIL_STATUS_DELETED)
 
 	// Добавление условия фильтрации по дате формирования, если она указана.
 	if startFormationDate != "" && endFormationDate != "" {
-		query = query.Where("fossil.formation_date BETWEEN ? AND ?", startFormationDate, endFormationDate)
+		query = query.Where("fossils.formation_date BETWEEN ? AND ?", startFormationDate, endFormationDate)
 	}
 
 	// Выполнение запроса и сканирование результатов в слайс fossil.
-	var fossils []ds.FossilPeriod
+	var fossils []ds.Fossilperiod
 	if err := query.Find(&fossils).Error; err != nil {
 		return nil, errors.New("ошибка получения ископаемых")
 	}
@@ -37,9 +37,9 @@ func (r *Repository) GetFossilByIDForUser(fossilID int, userID uint) (map[string
 	var fossil map[string]interface{}
 	// Получение информации о ископаемых по fossilID.
 	if err := r.db.
-		Table("fossil").
-		Select("fossil.id_fossil, fossil.flight_number, fossil.creation_date, fossil.formation_date, fossil.completion_date, fossil.status").
-		Where("fossil.status != ? AND fossil.id_fossil = ? AND fossil.user_id = ?", ds.FOSSIL_STATUS_DELETED, fossilID, userID).
+		Table("fossils").
+		Select("fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
+		Where("fossils.status != ? AND fossils.id_fossil = ? AND fossils.user_id = ?", ds.FOSSIL_STATUS_DELETED, fossilID, userID).
 		Scan(&fossil).Error; err != nil {
 		return nil, errors.New("ошибка получения останков по ИД")
 	}
@@ -71,7 +71,7 @@ func (r *Repository) DeleteFossilForUser(fossilID int, userID uint) error {
 	tx := r.db.Begin()
 
 	// Удаляем связанные записи из таблицы-множества (fossilperiods)
-	if err := tx.Where("id_fossil = ?", fossilID).Delete(&ds.FossilPeriod{}).Error; err != nil {
+	if err := tx.Where("id_fossil = ?", fossilID).Delete(&ds.Fossilperiod{}).Error; err != nil {
 		tx.Rollback()
 		return errors.New("ошибка удаления связей из таблицы-множества")
 	}
@@ -125,9 +125,9 @@ func (r *Repository) UpdateFossilStatusForUser(fossilID int, userID uint) error 
 	}
 
 	// Проверяем, что текущий статус останков - "черновик"
-	if fossil.FossilStatus == ds.FOSSIL_STATUS_DRAFT {
+	if fossil.Status == ds.FOSSIL_STATUS_DRAFT {
 		// Обновляем статус останков на "в работе"
-		fossil.FossilStatus = ds.FOSSIL_STATUS_WORK
+		fossil.Status = ds.FOSSIL_STATUS_WORK
 
 		// Обновляем дату формирования на текущее московское время
 		moscowTime, err := time.LoadLocation("Europe/Moscow")
