@@ -9,7 +9,7 @@ import (
 )
 
 func (r *Repository) GetPeriods(searchName string, userID uint) (map[string]interface{}, error) {
-	searchName = strings.ToUpper(searchName + "%")
+	searchName = strings.Title(searchName + "%")
 	var fossilID uint
 	if err := r.db.
 		Table("fossils").
