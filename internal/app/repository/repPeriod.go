@@ -24,6 +24,7 @@ func (r *Repository) GetPeriods(searchName string, userID uint) (map[string]inte
 		Table("periods").
 		Select("periods.id_period, periods.name, periods.description, periods.age, periods.status, periods.photo").
 		Where("periods.status = ? AND periods.name LIKE ?", ds.PERIOD_STATUS_ACTIVE, searchName).
+		Order("id_period").
 		Scan(&periods).Error; err != nil {
 		return nil, errors.New("ошибка нахождения списка периодов")
 	}
