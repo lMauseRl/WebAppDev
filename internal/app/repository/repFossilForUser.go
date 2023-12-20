@@ -41,10 +41,18 @@ func (r *Repository) GetFossilByIDForUser(fossilID int, userID uint) (map[string
 		Scan(&fossil).Error; err != nil {
 		return nil, errors.New("ошибка получения останков по ИД")
 	}
-
+	var periods []ds.Period
+	if err := r.db.
+		Table("periods").
+		Select("periods.id_period, periods.name, periods.description, periods.age, periods.status, periods.photo").
+		Joins("JOIN fossilperiods ON periods.id_period = fossilperiods.period_id").
+		Where("periods.id_period = fossilperiods.period_id").
+		Scan(&periods).Error; err != nil {
+		return nil, errors.New("ошибка нахождения списка периодов")
+	}
 	// Получение периодов по указанному fossilID.
 	// Добавление информации о периоде в поле "periods" внутри останков.
-
+	fossil["periods"] = periods
 	return fossil, nil
 }
 

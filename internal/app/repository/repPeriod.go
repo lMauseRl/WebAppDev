@@ -19,7 +19,7 @@ func (r *Repository) GetPeriods(searchName string, userID uint) (map[string]inte
 		//return nil, errors.New("ошибка нахождения id_fossil черновика")
 	}
 
-	var periods []map[string]interface{}
+	var periods []ds.Period
 	if err := r.db.
 		Table("periods").
 		Select("periods.id_period, periods.name, periods.description, periods.age, periods.status, periods.photo").

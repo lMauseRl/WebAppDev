@@ -19,7 +19,7 @@ func (h *Handler) GetPeriods(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"periods": periods})
+	c.JSON(http.StatusOK, periods)
 }
 
 func (h *Handler) GetPeriodByID(c *gin.Context) {
