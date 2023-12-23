@@ -21,7 +21,7 @@ type MinioClient struct {
 func NewMinioClient() (*MinioClient, error) {
 	accessKey := os.Getenv("MINIO_ACCESS_KEY")
 	secretKey := os.Getenv("MINIO_SECRET_KEY")
-	endpoint  := os.Getenv("MINIO_ENDPOINT")
+	endpoint := os.Getenv("MINIO_ENDPOINT")
 	client, err := minio.New(endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
 		Secure: false,
@@ -36,8 +36,8 @@ func NewMinioClient() (*MinioClient, error) {
 }
 
 // UploadServiceImage загружает изображение в MinIO и возвращает URL изображения.
-func (mc *MinioClient) UploadServiceImage(baggageID int, imageBytes []byte, contentType string) (string, error) {
-	objectName := fmt.Sprintf("baggages/%d/image", baggageID)
+func (mc *MinioClient) UploadServiceImage(periodID int, imageBytes []byte, contentType string) (string, error) {
+	objectName := fmt.Sprintf("period/%d/image", periodID)
 
 	reader := io.NopCloser(bytes.NewReader(imageBytes))
 
@@ -45,7 +45,7 @@ func (mc *MinioClient) UploadServiceImage(baggageID int, imageBytes []byte, cont
 		ContentType: contentType,
 	})
 	if err != nil {
-		return "", errors.New("ошибка загрузки изображения в минио")
+		return "s", err
 	}
 
 	// Формирование URL изображения
@@ -54,8 +54,8 @@ func (mc *MinioClient) UploadServiceImage(baggageID int, imageBytes []byte, cont
 }
 
 // RemoveServiceImage удаляет изображение услуги из MinIO.
-func (mc *MinioClient) RemoveServiceImage(baggageID int) error {
-	objectName := fmt.Sprintf("baggages/%d/image", baggageID)
+func (mc *MinioClient) RemoveServiceImage(periodID int) error {
+	objectName := fmt.Sprintf("period/%d/image", periodID)
 	err := mc.Client.RemoveObject(context.TODO(), "images-bucket", objectName, minio.RemoveObjectOptions{})
 	if err != nil {
 		return errors.New("не удалось удалить изображение из бакет")

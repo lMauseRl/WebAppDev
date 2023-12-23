@@ -18,7 +18,7 @@ func (h *Handler) AddPeriodImage(c *gin.Context) {
 	// Чтение изображения из запроса
 	image, err := c.FormFile("image")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "недопустимое изображение"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
