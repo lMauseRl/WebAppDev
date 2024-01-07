@@ -1,0 +1,1076 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/fossil": {
+            "get": {
+                "description": "Возвращает список всех не удаленных ископаемых",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Останки"
+                ],
+                "summary": "Получение списка ископаемых",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Название вида",
+                        "name": "searchSpecies",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Начало даты формирования",
+                        "name": "startFormationDate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Конец даты формирования",
+                        "name": "endFormationDate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Статус ископаемого",
+                        "name": "fossilStatus",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список ископаемых",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilRequest"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/fossil/{id}": {
+            "get": {
+                "description": "Возвращает информацию об останке по её идентификатору",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Останки"
+                ],
+                "summary": "Получение ископаемого по идентификатору",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Идентификатор ископаемого",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация об останке",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Недопустимый идентификатор ископаемого",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/fossil/{id}/delete": {
+            "delete": {
+                "description": "Удаляет ископаемое по её идентификатору",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Останки"
+                ],
+                "summary": "Удаление ископаемого",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Идентификатор ископаемого",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Название вида",
+                        "name": "searchSpecies",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Начало даты формирования",
+                        "name": "startFormationDate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Конец даты формирования",
+                        "name": "endFormationDate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Статус ископаемого",
+                        "name": "fossilStatus",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список периодов",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Недопустимый идентификатор ископаемого",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilRequest"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/fossil/{id}/status": {
+            "put": {
+                "description": "Обновляет статус ископаемого для модератора по идентификатору ископаемого",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Останки"
+                ],
+                "summary": "Обновление статуса ископаемого для модератора",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Идентификатор ископаемого",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Новый статус ископаемого",
+                        "name": "fossilStatus",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilUpdateStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация об останке",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Недопустимый идентификатор ископаемого или ошибка чтения JSON объекта",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/fossil/{id}/update": {
+            "put": {
+                "description": "Обновляет номер рейса для ископаемого по её идентификатору",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Останки"
+                ],
+                "summary": "Обновление номера рейса ископаемого",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Идентификатор ископаемого",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Новый вид ископаемого",
+                        "name": "species",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilUpdateSpeciesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация об останке",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Недопустимый идентификатор ископаемого или ошибка чтения JSON объекта",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/fossil/{id}/user": {
+            "put": {
+                "description": "Обновляет статус ископаемого для пользователя по идентификатору ископаемого",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Останки"
+                ],
+                "summary": "Обновление статуса ископаемого для пользователя",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Идентификатор ископаемого",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация об останке",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Недопустимый идентификатор ископаемого",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.FossilGetResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/period": {
+            "get": {
+                "description": "Возращает список всех активных периодов",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Период"
+                ],
+                "summary": "Получение списка периодов",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Название периода",
+                        "name": "searchName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список периодов",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/period/create": {
+            "post": {
+                "description": "Создает новый период с предоставленными данными",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Период"
+                ],
+                "summary": "Создание нового периода",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Имя периода",
+                        "name": "searchName",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Пользовательский объект в формате JSON",
+                        "name": "period",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список периодов",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/period/{id_period}": {
+            "get": {
+                "description": "Возвращает информацию о периоде по его ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Период"
+                ],
+                "summary": "Получение периода по ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID периода",
+                        "name": "id_period",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о периоде",
+                        "schema": {
+                            "$ref": "#/definitions/model.Period"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/model.Period"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Period"
+                        }
+                    }
+                }
+            }
+        },
+        "/period/{id_period}/delete": {
+            "delete": {
+                "description": "Удаляет период по его ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Период"
+                ],
+                "summary": "Удаление периода",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID периода",
+                        "name": "id_period",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Имя периода",
+                        "name": "searchName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список периодов",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/period/{id_period}/fossil": {
+            "post": {
+                "description": "Добавляет период к доставке по его ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Период"
+                ],
+                "summary": "Добавление периода к доставке",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID периода",
+                        "name": "id_period",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Имя периода",
+                        "name": "searchName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список периодов",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/period/{id_period}/fossil/delete": {
+            "delete": {
+                "description": "Удаляет период из доставки по его ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Период"
+                ],
+                "summary": "Удаление периода из доставки",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID периода",
+                        "name": "id_period",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Имя периода",
+                        "name": "searchName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список периодов",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodGetResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/period/{id_period}/image": {
+            "post": {
+                "description": "Добавляет изображение к периоду по его ID",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Период"
+                ],
+                "summary": "Добавление изображения к периоду",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID периода",
+                        "name": "id_period",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Изображение периода",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Period"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/model.Period"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Period"
+                        }
+                    }
+                }
+            }
+        },
+        "/period/{id_period}/update": {
+            "put": {
+                "description": "Обновляет информацию о периоде по его ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Период"
+                ],
+                "summary": "Обновление информации о периоде",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID периода",
+                        "name": "id_period",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о периоде",
+                        "schema": {
+                            "$ref": "#/definitions/model.Period"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/model.Period"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Period"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/": {
+            "get": {
+                "description": "Получение данных пользователя по его идентификатору",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Получить пользователя по идентификатору",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.User"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "Авторизация пользователя и генерация JWT-токена",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пользователь"
+                ],
+                "summary": "Вход пользователя",
+                "parameters": [
+                    {
+                        "description": "Данные для входа",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "post": {
+                "description": "Выход пользователя из системы и удаление токена из куков",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пользователь"
+                ],
+                "summary": "Выход пользователя",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/refreshtoken": {
+            "post": {
+                "description": "Обновление пары токенов",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пользователь"
+                ],
+                "summary": "Обновление токенов",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/register": {
+            "post": {
+                "description": "Регистрация нового пользователя с предоставленной информацией.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пользователь"
+                ],
+                "summary": "Регистрация нового пользователя.",
+                "parameters": [
+                    {
+                        "description": "Пользовательский объект в формате JSON",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Успешно зарегистрированный пользователь",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.User"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.FossilGetResponse": {
+            "type": "object",
+            "properties": {
+                "completion_date": {
+                    "type": "string"
+                },
+                "creation_date": {
+                    "type": "string"
+                },
+                "formation_date": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "id_fossil": {
+                    "type": "integer"
+                },
+                "periods": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Period"
+                    }
+                },
+                "species": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.FossilRequest": {
+            "type": "object",
+            "properties": {
+                "completion_date": {
+                    "type": "string"
+                },
+                "creation_date": {
+                    "type": "string"
+                },
+                "formation_date": {
+                    "type": "string"
+                },
+                "id_fossil": {
+                    "type": "integer"
+                },
+                "species": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.FossilUpdateSpeciesRequest": {
+            "type": "object",
+            "properties": {
+                "species": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.FossilUpdateStatusRequest": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Period": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id_period": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "photo": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PeriodGetResponse": {
+            "type": "object",
+            "properties": {
+                "id_fossil": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "periods": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Period"
+                    }
+                }
+            }
+        },
+        "model.PeriodRequest": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Role": {
+            "type": "string",
+            "enum": [
+                "пользователь",
+                "модератор"
+            ],
+            "x-enum-varnames": [
+                "UserRole",
+                "ModeratorRole"
+            ]
+        },
+        "model.User": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/model.Role"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.UserLoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserRegisterRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -5,8 +5,8 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/lud0m4n/WebAppDev/internal/app/ds"
-	"github.com/lud0m4n/WebAppDev/internal/app/dsn"
+	"github.com/lud0m4n/WebAppDev/internal/dsn"
+	"github.com/lud0m4n/WebAppDev/internal/model"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 	}
 
 	// Явно мигрировать только нужные таблицы
-	err = db.AutoMigrate(&ds.Period{}, &ds.Fossil{}, &ds.User{}, &ds.Fossilperiod{})
+	err = db.AutoMigrate(&model.User{})
 	if err != nil {
 		panic("cant migrate db")
 	}
