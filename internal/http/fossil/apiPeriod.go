@@ -32,7 +32,7 @@ func (h *Handler) GetPeriods(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"periods": periods})
+	c.JSON(http.StatusOK, periods)
 }
 
 // @Summary Получение периода по ID

@@ -7,8 +7,6 @@ definitions:
         type: string
       formation_date:
         type: string
-      full_name:
-        type: string
       id_fossil:
         type: integer
       periods:
@@ -267,7 +265,7 @@ paths:
       - Останки
   /fossil/{id}/update:
     put:
-      description: Обновляет номер рейса для ископаемого по её идентификатору
+      description: Обновляет вид для ископаемого по её идентификатору
       parameters:
       - description: Идентификатор ископаемого
         in: path
@@ -296,7 +294,7 @@ paths:
           description: Ошибка сервера
           schema:
             $ref: '#/definitions/model.FossilGetResponse'
-      summary: Обновление номера рейса ископаемого
+      summary: Обновление вид ископаемого
       tags:
       - Останки
   /fossil/{id}/user:

@@ -15,7 +15,7 @@ func (r *Repository) GetFossilForUser(searchSpecies, startFormationDate, endForm
 	// Построение основного запроса для получения ископаемых.
 	query := r.db.Table("fossils").
 		Select("fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status, users.full_name").
-		Joins("JOIN users ON users.id_user = fossils.user_id").
+		Joins("JOIN users ON users.user_id = fossils.user_id").
 		Where("fossils.status LIKE ? AND fossils.species LIKE ? AND fossils.user_id = ? AND fossils.status != ?", fossilStatus, searchSpecies, userID, model.FOSSIL_STATUS_DELETED)
 
 	// Добавление условия фильтрации по дате формирования, если она указана.
@@ -32,28 +32,36 @@ func (r *Repository) GetFossilForUser(searchSpecies, startFormationDate, endForm
 }
 
 func (r *Repository) GetFossilByIDForUser(fossilID int, userID uint) (model.FossilGetResponse, error) {
-	var fossil model.FossilGetResponse
+	var fossil_info model.FossilGetResponse
+	var fossil model.FossilRequest
 	// Получение информации о ископаемых по fossilID.
 	if err := r.db.
 		Table("fossils").
 		Select("fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
+		Joins("JOIN users ON users.user_id = fossils.user_id").
 		Where("fossils.status != ? AND fossils.id_fossil = ? AND fossils.user_id = ?", model.FOSSIL_STATUS_DELETED, fossilID, userID).
 		Scan(&fossil).Error; err != nil {
-		return model.FossilGetResponse{}, errors.New("ошибка получения останков по ИД")
+		return model.FossilGetResponse{}, errors.New(err.Error())
 	}
 	var periods []model.Period
 	if err := r.db.
 		Table("periods").
 		Select("periods.id_period, periods.name, periods.description, periods.age, periods.status, periods.photo").
 		Joins("JOIN fossilperiods ON periods.id_period = fossilperiods.period_id").
-		Where("periods.id_period = fossilperiods.period_id").
+		Where("fossilperiods.fossil_id = ?", fossil.IDFossil).
 		Scan(&periods).Error; err != nil {
 		return model.FossilGetResponse{}, errors.New("ошибка нахождения списка периодов")
 	}
 	// Получение периодов по указанному fossilID.
 	// Добавление информации о периоде в поле "periods" внутри останков.
-	fossil.Period = periods
-	return fossil, nil
+	fossil_info.IDFossil = fossil.IDFossil
+	fossil_info.CompletionDate = fossil.CompletionDate
+	fossil_info.CreationDate = fossil.CreationDate
+	fossil_info.FormationDate = fossil.FormationDate
+	fossil_info.Species = fossil.Species
+	fossil_info.Status = fossil.Status
+	fossil_info.Periods = periods
+	return fossil_info, nil
 }
 
 func (r *Repository) DeleteFossilForUser(fossilID int, userID uint) error {

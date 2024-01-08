@@ -142,8 +142,8 @@ func (h *Handler) DeleteFossil(c *gin.Context) {
 }
 
 // UpdateFossil godoc
-// @Summary Обновление номера рейса ископаемого
-// @Description Обновляет номер рейса для ископаемого по её идентификатору
+// @Summary Обновление вид ископаемого
+// @Description Обновляет вид для ископаемого по её идентификатору
 // @Tags Останки
 // @Produce json
 // @Param id path int true "Идентификатор ископаемого"

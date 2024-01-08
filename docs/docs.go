@@ -233,14 +233,14 @@ const docTemplate = `{
         },
         "/fossil/{id}/update": {
             "put": {
-                "description": "Обновляет номер рейса для ископаемого по её идентификатору",
+                "description": "Обновляет вид для ископаемого по её идентификатору",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Останки"
                 ],
-                "summary": "Обновление номера рейса ископаемого",
+                "summary": "Обновление вид ископаемого",
                 "parameters": [
                     {
                         "type": "integer",
@@ -914,9 +914,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "formation_date": {
-                    "type": "string"
-                },
-                "full_name": {
                     "type": "string"
                 },
                 "id_fossil": {

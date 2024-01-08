@@ -46,9 +46,6 @@ func (uc *UseCase) UpdateFossilForModerator(fossilID int, moderatorID uint, spec
 	if moderatorID <= 0 {
 		return errors.New("недопустимый ИД модератора")
 	}
-	if len(species.Species) != 6 {
-		return errors.New("недопустимый номер рейса")
-	}
 
 	err := uc.Repository.UpdateFossilForModerator(fossilID, moderatorID, &species)
 	if err != nil {

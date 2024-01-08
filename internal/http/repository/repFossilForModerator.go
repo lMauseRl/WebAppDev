@@ -32,7 +32,8 @@ func (r *Repository) GetFossilForModerator(searchSpecies, startFormationDate, en
 }
 
 func (r *Repository) GetFossilByIDForModerator(fossilID int, moderatorID uint) (model.FossilGetResponse, error) {
-	var fossil model.FossilGetResponse
+	var fossil_info model.FossilGetResponse
+	var fossil model.FossilRequest
 	// Получение информации о останках по fossilID.
 	if err := r.db.
 		Table("fossils").
@@ -53,8 +54,14 @@ func (r *Repository) GetFossilByIDForModerator(fossilID int, moderatorID uint) (
 		return model.FossilGetResponse{}, errors.New("ошибка нахождения списка периодов")
 	}
 	// Добавление информации о периодах в поле "periods" внутри ископаамых.
-	fossil.Period = periods
-	return fossil, nil
+	fossil_info.IDFossil = fossil.IDFossil
+	fossil_info.CompletionDate = fossil.CompletionDate
+	fossil_info.CreationDate = fossil.CreationDate
+	fossil_info.FormationDate = fossil.FormationDate
+	fossil_info.Species = fossil.Species
+	fossil_info.Status = fossil.Status
+	fossil_info.Periods = periods
+	return fossil_info, nil
 }
 
 func (r *Repository) UpdateFossilForModerator(fossilID int, moderatorID uint, updatedFossil *model.FossilUpdateSpeciesRequest) error {
@@ -99,8 +106,8 @@ func (r *Repository) UpdateFossilStatusForModerator(fossilID int, moderatorID ui
 	}
 
 	// Проверяем, что новый статус является "завершен" или "отклонен"
-	if updateRequest.Status == model.FOSSIL_STATUS_COMPLETED || updateRequest.Status == model.FOSSIL_STATUS_REJECTED {
-		return errors.New("текущий статус останка уже завершен или отклонен")
+	if updateRequest.Status != model.FOSSIL_STATUS_COMPLETED && updateRequest.Status != model.FOSSIL_STATUS_REJECTED {
+		return errors.New("текущий статус останка не завершен или отклонен")
 	}
 
 	// Обновляем только поле Status из JSON-запроса
