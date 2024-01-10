@@ -63,7 +63,7 @@ func (h *Handler) GetPeriodByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"period": period})
+	c.JSON(http.StatusOK, period)
 }
 
 // @Summary Создание нового периода
@@ -104,7 +104,7 @@ func (h *Handler) CreatePeriod(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"periods": periods})
+	c.JSON(http.StatusOK, periods)
 }
 
 // @Summary Удаление периода
@@ -143,7 +143,7 @@ func (h *Handler) DeletePeriod(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"periods": periods})
+	c.JSON(http.StatusOK, periods)
 }
 
 // @Summary Обновление информации о периоде
@@ -187,7 +187,7 @@ func (h *Handler) UpdatePeriod(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"period": updatedPeriod})
+	c.JSON(http.StatusOK, updatedPeriod)
 }
 
 // @Summary Добавление периода к доставке
@@ -226,7 +226,7 @@ func (h *Handler) AddPeriodToFossil(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"periods": periods})
+	c.JSON(http.StatusOK, periods)
 }
 
 // @Summary Удаление периода из доставки
@@ -265,7 +265,7 @@ func (h *Handler) RemovePeriodFromFossil(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"periods": periods})
+	c.JSON(http.StatusOK, periods)
 }
 
 // @Summary Добавление изображения к периоду
@@ -327,5 +327,5 @@ func (h *Handler) AddPeriodImage(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"period": period})
+	c.JSON(http.StatusOK, period)
 }
