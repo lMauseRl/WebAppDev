@@ -214,7 +214,7 @@ func (h *Handler) AddPeriodToFossil(c *gin.Context) {
 		return
 	}
 
-	err = h.UseCase.AddPeriodToFossil(uint(periodID), uint(userID), 1)
+	err = h.UseCase.AddPeriodToFossil(uint(periodID), uint(userID), 2)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
