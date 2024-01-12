@@ -14,7 +14,7 @@ func (r *Repository) GetFossilForModerator(searchSpecies, startFormationDate, en
 
 	// Построение основного запроса для получения ископаемых.
 	query := r.db.Table("fossils").
-		Select("fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
+		Select("fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
 		Joins("JOIN fossilperiods ON fossils.id_fossil = fossilperiods.fossil_id").
 		Joins("JOIN periods ON periods.id_period = fossilperiods.fossil_id").
 		Where("fossils.status LIKE ? AND fossils.species LIKE ? AND fossils.moderator_id = ?", fossilStatus, searchSpecies, moderatorID)
@@ -37,7 +37,7 @@ func (r *Repository) GetFossilByIDForModerator(fossilID int, moderatorID uint) (
 	// Получение информации о останках по fossilID.
 	if err := r.db.
 		Table("fossils").
-		Select("fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
+		Select("fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
 		Where("fossils.status != ? AND fossils.id_fossil = ? AND fossils.moderator_id = ?", model.FOSSIL_STATUS_DELETED, fossilID, moderatorID).
 		Scan(&fossil).Error; err != nil {
 		return model.FossilGetResponse{}, errors.New("ошибка получения останков по ИД")
