@@ -824,47 +824,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/refreshtoken": {
-            "post": {
-                "description": "Обновление пары токенов",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Пользователь"
-                ],
-                "summary": "Обновление токенов",
-                "responses": {
-                    "200": {
-                        "description": "Успешный ответ",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный запрос",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/user/register": {
             "post": {
                 "description": "Регистрация нового пользователя с предоставленной информацией.",
