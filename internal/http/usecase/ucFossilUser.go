@@ -25,7 +25,7 @@ func (uc *UseCase) GetFossilForUser(searchSpecies, startFormationDate, endFormat
 
 func (uc *UseCase) GetFossilByIDForUser(fossilID int, userID uint) (model.FossilGetResponse, error) {
 	if fossilID <= 0 {
-		return model.FossilGetResponse{}, errors.New("недопустимый ИД доставки")
+		return model.FossilGetResponse{}, errors.New("недопустимый ИД останка")
 	}
 	if userID <= 0 {
 		return model.FossilGetResponse{}, errors.New("недопустимый ИД пользователя")
@@ -41,7 +41,7 @@ func (uc *UseCase) GetFossilByIDForUser(fossilID int, userID uint) (model.Fossil
 
 func (uc *UseCase) DeleteFossilForUser(fossilID int, userID uint) error {
 	if fossilID <= 0 {
-		return errors.New("недопустимый ИД доставки")
+		return errors.New("недопустимый ИД останка")
 	}
 	if userID <= 0 {
 		return errors.New("недопустимый ИД пользователя")
@@ -57,13 +57,10 @@ func (uc *UseCase) DeleteFossilForUser(fossilID int, userID uint) error {
 
 func (uc *UseCase) UpdateFossilForUser(fossilID int, userID uint, species model.FossilUpdateSpeciesRequest) error {
 	if fossilID <= 0 {
-		return errors.New("недопустимый ИД доставки")
+		return errors.New("недопустимый ИД останка")
 	}
 	if userID <= 0 {
 		return errors.New("недопустимый ИД пользователя")
-	}
-	if len(species.Species) != 6 {
-		return errors.New("недопустимый номер рейса")
 	}
 	//////////////
 	err := uc.Repository.UpdateFossilForUser(fossilID, userID, &species)
@@ -76,7 +73,7 @@ func (uc *UseCase) UpdateFossilForUser(fossilID int, userID uint, species model.
 
 func (uc *UseCase) UpdateFossilStatusForUser(fossilID int, userID uint) error {
 	if fossilID <= 0 {
-		return errors.New("недопустимый ИД доставки")
+		return errors.New("недопустимый ИД останка")
 	}
 	if userID <= 0 {
 		return errors.New("недопустимый ИД пользователя")

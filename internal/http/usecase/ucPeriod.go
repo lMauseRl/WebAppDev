@@ -27,7 +27,7 @@ func (uc *UseCase) GetPeriods(searchName string, userID uint) (model.PeriodGetRe
 
 func (uc *UseCase) GetPeriodByID(periodID int, userID uint) (model.Period, error) {
 	if periodID <= 0 {
-		return model.Period{}, errors.New("недопустимый ИД багажа")
+		return model.Period{}, errors.New("недопустимый ИД периода")
 	}
 	if userID < 0 {
 		return model.Period{}, errors.New("недопустимый ИД пользователя")
@@ -150,7 +150,7 @@ func (uc *UseCase) RemovePeriodFromFossil(periodID, userID uint) error {
 
 func (uc *UseCase) AddPeriodImage(periodID int, userID uint, imageBytes []byte, ContentType string) error {
 	if periodID <= 0 {
-		return errors.New("недопустимый ИД багажа")
+		return errors.New("недопустимый ИД периода")
 	}
 	if userID <= 0 {
 		return errors.New("недопустимый ИД пользователя")

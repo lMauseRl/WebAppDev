@@ -49,7 +49,7 @@ func (r *Repository) GetFossilByIDForModerator(fossilID int, moderatorID uint) (
 		Table("periods").
 		Select("periods.id_period, periods.name, periods.description, periods.age, periods.status, periods.photo").
 		Joins("JOIN fossilperiods ON periods.id_period = fossilperiods.period_id").
-		Where("periods.id_period = fossilperiods.period_id").
+		Where("fossilperiods.fossil_id = ?", fossil.IDFossil).
 		Scan(&periods).Error; err != nil {
 		return model.FossilGetResponse{}, errors.New("ошибка нахождения списка периодов")
 	}

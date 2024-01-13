@@ -25,7 +25,7 @@ func (uc *UseCase) GetFossilForModerator(searchSpecies, startFormationDate, endF
 
 func (uc *UseCase) GetFossilByIDForModerator(fossilID int, moderatorID uint) (model.FossilGetResponse, error) {
 	if fossilID <= 0 {
-		return model.FossilGetResponse{}, errors.New("недопустимый ИД доставки")
+		return model.FossilGetResponse{}, errors.New("недопустимый ИД останка")
 	}
 	if moderatorID <= 0 {
 		return model.FossilGetResponse{}, errors.New("недопустимый ИД модератора")
@@ -41,7 +41,7 @@ func (uc *UseCase) GetFossilByIDForModerator(fossilID int, moderatorID uint) (mo
 
 func (uc *UseCase) UpdateFossilForModerator(fossilID int, moderatorID uint, species model.FossilUpdateSpeciesRequest) error {
 	if fossilID <= 0 {
-		return errors.New("недопустимый ИД доставки")
+		return errors.New("недопустимый ИД останка")
 	}
 	if moderatorID <= 0 {
 		return errors.New("недопустимый ИД модератора")
@@ -57,13 +57,13 @@ func (uc *UseCase) UpdateFossilForModerator(fossilID int, moderatorID uint, spec
 
 func (uc *UseCase) UpdateFossilStatusForModerator(fossilID int, moderatorID uint, fossilStatus model.FossilUpdateStatusRequest) error {
 	if fossilID <= 0 {
-		return errors.New("недопустимый ИД доставки")
+		return errors.New("недопустимый ИД останка")
 	}
 	if moderatorID <= 0 {
 		return errors.New("недопустимый ИД модератора")
 	}
 	if fossilStatus.Status != model.FOSSIL_STATUS_COMPLETED && fossilStatus.Status != model.FOSSIL_STATUS_REJECTED {
-		return errors.New("текущий статус доставки уже завершен или отклонен")
+		return errors.New("текущий статус останка уже завершен или отклонен")
 	}
 
 	err := uc.Repository.UpdateFossilStatusForModerator(fossilID, moderatorID, &fossilStatus)

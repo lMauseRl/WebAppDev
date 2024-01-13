@@ -285,7 +285,7 @@ func (h *Handler) UpdateFossilStatusForModerator(c *gin.Context) {
 			return
 		}
 
-		fossil, err := h.UseCase.GetFossilByIDForUser(int(fossilID), userID)
+		fossil, err := h.UseCase.GetFossilByIDForModerator(int(fossilID), userID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
