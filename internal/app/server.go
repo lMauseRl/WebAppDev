@@ -14,6 +14,12 @@ import (
 // Run запускает приложение.
 func (app *Application) Run() {
 	r := gin.Default()
+	r.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "*")
+		c.Next()
+	})
 	// Это нужно для автоматического создания папки "docs" в вашем проекте
 	docs.SwaggerInfo.Title = "BagTracker RestAPI"
 	docs.SwaggerInfo.Description = "API server for BagTracker application"
