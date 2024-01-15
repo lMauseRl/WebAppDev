@@ -16,7 +16,7 @@ func (r *Repository) GetFossilForUser(searchSpecies, startFormationDate, endForm
 	query := r.db.Table("fossils").
 		Select("fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status, users.full_name").
 		Joins("JOIN users ON users.user_id = fossils.user_id").
-		Where("fossils.status LIKE ? AND fossils.species LIKE ? AND fossils.user_id = ? AND fossils.status != ?", fossilStatus, searchSpecies, userID, model.FOSSIL_STATUS_DELETED)
+		Where("fossils.status LIKE ? AND fossils.species LIKE ? AND fossils.user_id = ? AND fossils.status != ? AND fossils.status != ?", fossilStatus, searchSpecies, userID, model.FOSSIL_STATUS_DELETED, model.FOSSIL_STATUS_DRAFT)
 
 	// Добавление условия фильтрации по дате формирования, если она указана.
 	if startFormationDate != "" && endFormationDate != "" {
@@ -39,7 +39,7 @@ func (r *Repository) GetFossilByIDForUser(fossilID int, userID uint) (model.Foss
 		Table("fossils").
 		Select("fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
 		Joins("JOIN users ON users.user_id = fossils.user_id").
-		Where("fossils.status != ? AND fossils.status != ? AND fossils.id_fossil = ? AND fossils.user_id = ?", model.FOSSIL_STATUS_DELETED, model.FOSSIL_STATUS_DRAFT, fossilID, userID).
+		Where("fossils.status != ? AND fossils.id_fossil = ? AND fossils.user_id = ?", model.FOSSIL_STATUS_DELETED, fossilID, userID).
 		Scan(&fossil).Error; err != nil {
 		return model.FossilGetResponse{}, errors.New(err.Error())
 	}
