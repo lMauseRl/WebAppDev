@@ -227,24 +227,19 @@ func (h *Handler) UpdateFossilStatusForUser(c *gin.Context) {
 		return
 	}
 
-	if middleware.ModeratorOnly(h.UseCase.Repository, c) {
-		c.JSON(http.StatusForbidden, gin.H{"error": "данный запрос доступен только пользователю"})
+	err = h.UseCase.UpdateFossilStatusForUser(int(fossilID), userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
-	} else {
-		err = h.UseCase.UpdateFossilStatusForUser(int(fossilID), userID)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		fossil, err := h.UseCase.GetFossilByIDForUser(int(fossilID), userID)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{"fossil": fossil})
 	}
+
+	fossil, err := h.UseCase.GetFossilByIDForUser(int(fossilID), userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"fossil": fossil})
 }
 
 // UpdateFossilStatusForModerator godoc
