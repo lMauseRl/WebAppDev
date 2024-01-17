@@ -14,13 +14,14 @@ func (r *Repository) GetFossilForModerator(searchSpecies, startFormationDate, en
 
 	// Построение основного запроса для получения ископаемых.
 	query := r.db.Table("fossils").
-		Select("DISTINCT fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status").
+		Select("DISTINCT fossils.id_fossil, fossils.species, fossils.creation_date, fossils.formation_date, fossils.completion_date, fossils.status, users.full_name").
 		Joins("JOIN fossilperiods ON fossils.id_fossil = fossilperiods.fossil_id").
 		Joins("JOIN periods ON periods.id_period = fossilperiods.fossil_id").
-		Where("fossils.status LIKE ? AND fossils.species LIKE ? AND fossils.moderator_id = ?", fossilStatus, searchSpecies, moderatorID)
+		Joins("JOIN users ON users.user_id = fossils.user_id").
+		Where("fossils.status LIKE ? AND fossils.species LIKE ? AND fossils.moderator_id = ? AND fossils.status != ?", fossilStatus, searchSpecies, moderatorID, model.FOSSIL_STATUS_DRAFT)
 	// Добавление условия фильтрации по дате формирования, если она указана.
 	if startFormationDate != "" && endFormationDate != "" {
-		query = query.Where("fossil.formation_date BETWEEN ? AND ?", startFormationDate, endFormationDate)
+		query = query.Where("fossils.formation_date BETWEEN ? AND ?", startFormationDate, endFormationDate)
 	}
 
 	// Выполнение запроса и сканирование результатов в структуру fossil.

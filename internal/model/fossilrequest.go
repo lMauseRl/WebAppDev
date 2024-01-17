@@ -9,4 +9,5 @@ type FossilRequest struct {
 	FormationDate  time.Time `json:"formation_date"`
 	CompletionDate time.Time `json:"completion_date"`
 	Status         string    `json:"status"`
+	FullName       string    `json:"full_name"`
 }
