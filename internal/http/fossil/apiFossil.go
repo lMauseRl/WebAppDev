@@ -121,11 +121,6 @@ func (h *Handler) DeleteFossil(c *gin.Context) {
 		return
 	}
 
-	if middleware.ModeratorOnly(h.UseCase.Repository, c) {
-		c.JSON(http.StatusForbidden, gin.H{"error": "данный запрос недоступен для модератора"})
-		return
-	}
-
 	err = h.UseCase.DeleteFossilForUser(int(fossilID), userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
