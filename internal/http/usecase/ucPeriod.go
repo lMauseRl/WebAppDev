@@ -59,7 +59,6 @@ func (uc *UseCase) CreatePeriod(userID uint, requestPeriod model.PeriodRequest) 
 		Name:        requestPeriod.Name,
 		Description: requestPeriod.Description,
 		Age:         requestPeriod.Age,
-		Status:      model.PERIOD_STATUS_ACTIVE,
 	}
 
 	err := uc.Repository.CreatePeriod(userID, &period)

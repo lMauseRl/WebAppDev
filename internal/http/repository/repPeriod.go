@@ -22,7 +22,7 @@ func (r *Repository) GetPeriods(searchName string, userID uint) (model.PeriodGet
 	var periods []model.Period
 	if err := r.db.
 		Table("periods").
-		Select("periods.id_period, periods.name, periods.description, periods.age, periods.status, periods.photo").
+		Select("periods.id_period, periods.name, periods.description, periods.age, periods.photo").
 		Where("periods.status = ? AND periods.name LIKE ?", model.PERIOD_STATUS_ACTIVE, searchName).
 		Order("id_period").
 		Scan(&periods).Error; err != nil {
@@ -42,7 +42,7 @@ func (r *Repository) GetPeriodByID(periodID int, userID uint) (model.Period, err
 	var periods model.Period
 	if err := r.db.
 		Table("periods").
-		Select("periods.id_period, periods.name, periods.description, periods.age, periods.status, periods.photo").
+		Select("periods.id_period, periods.name, periods.description, periods.age, periods.photo").
 		Where("periods.status = ? AND periods.id_period = ?", model.PERIOD_STATUS_ACTIVE, periodID).
 		Scan(&periods).Error; err != nil {
 		return model.Period{}, errors.New("ошибка нахождения периода по ID")
@@ -56,7 +56,7 @@ func (r *Repository) GetPeriodsBySpecies(fossilSpecies string) ([]map[string]int
 	// Выполнение запроса к базе данных для получения периода с указанными параметрами.
 	if err := r.db.
 		Table("periods").
-		Select("periods.id_period, periods.name, periods.description, periods.age, periods.status, periods.photo").
+		Select("periods.id_period, periods.name, periods.description, periods.age, periods.photo").
 		Joins("JOIN fossilperiods ON periods.id_period = fossilperiods.period_id").
 		Joins("JOIN fossils ON fossilperiods.fossil_id = fossils.id_fossil").
 		Where("periods.status = ? AND fossils.species = ?", model.PERIOD_STATUS_ACTIVE, fossilSpecies).

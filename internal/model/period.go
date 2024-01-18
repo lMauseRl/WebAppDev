@@ -5,7 +5,6 @@ type Period struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Age         string `json:"age"`
-	Status      string `json:"status"`
 	Photo       string `json:"photo"`
 }
 
