@@ -8,7 +8,7 @@ import (
 	"github.com/lud0m4n/WebAppDev/internal/model"
 )
 
-func (r *Repository) GetPeriods(searchName string, userID uint) (model.PeriodGetResponse, error) {
+func (r *Repository) GetPeriods(searchName string, userID uint, page, pageSize int) (model.PeriodGetResponse, error) {
 	searchName = strings.Title(searchName + "%")
 	var fossilID uint
 	if err := r.db.
@@ -18,13 +18,14 @@ func (r *Repository) GetPeriods(searchName string, userID uint) (model.PeriodGet
 		Take(&fossilID).Error; err != nil {
 		//return nil, errors.New("ошибка нахождения id_fossil черновика")
 	}
-
+	offset := (page - 1) * pageSize
 	var periods []model.Period
 	if err := r.db.
 		Table("periods").
 		Select("periods.id_period, periods.name, periods.description, periods.age, periods.photo").
 		Where("periods.status = ? AND periods.name LIKE ?", model.PERIOD_STATUS_ACTIVE, searchName).
 		Order("id_period").
+		Limit(pageSize).Offset(offset).
 		Scan(&periods).Error; err != nil {
 		return model.PeriodGetResponse{}, errors.New("ошибка нахождения списка периодов")
 	}

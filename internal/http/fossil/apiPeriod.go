@@ -19,6 +19,8 @@ import (
 // @Router /period [get]
 func (h *Handler) GetPeriods(c *gin.Context) {
 	searchName := c.DefaultQuery("searchName", "")
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "30"))
 	ctxUserID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Идентификатор пользователя отсутствует в контексте пп"})
@@ -26,7 +28,7 @@ func (h *Handler) GetPeriods(c *gin.Context) {
 	}
 	userID := ctxUserID.(uint)
 
-	periods, err := h.UseCase.GetPeriods(searchName, userID)
+	periods, err := h.UseCase.GetPeriods(searchName, userID, page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -79,6 +81,8 @@ func (h *Handler) GetPeriodByID(c *gin.Context) {
 // @Router /period/create [post]
 func (h *Handler) CreatePeriod(c *gin.Context) {
 	searchName := c.DefaultQuery("searchName", "")
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "30"))
 	ctxUserID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Идентификатор пользователя отсутствует в контексте"})
@@ -98,7 +102,7 @@ func (h *Handler) CreatePeriod(c *gin.Context) {
 		return
 	}
 
-	periods, err := h.UseCase.GetPeriods(searchName, userID)
+	periods, err := h.UseCase.GetPeriods(searchName, userID, page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -119,6 +123,8 @@ func (h *Handler) CreatePeriod(c *gin.Context) {
 // @Router /period/{id_period}/delete [delete]
 func (h *Handler) DeletePeriod(c *gin.Context) {
 	searchName := c.DefaultQuery("searchName", "")
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "30"))
 	ctxUserID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Идентификатор пользователя отсутствует в контексте"})
@@ -137,7 +143,7 @@ func (h *Handler) DeletePeriod(c *gin.Context) {
 		return
 	}
 
-	periods, err := h.UseCase.GetPeriods(searchName, userID)
+	periods, err := h.UseCase.GetPeriods(searchName, userID, page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -203,6 +209,8 @@ func (h *Handler) UpdatePeriod(c *gin.Context) {
 func (h *Handler) AddPeriodToFossil(c *gin.Context) {
 	periodID, err := strconv.Atoi(c.Param("id_period"))
 	searchName := c.DefaultQuery("searchName", "")
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "30"))
 	ctxUserID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Идентификатор пользователя отсутствует в контексте"})
@@ -220,7 +228,7 @@ func (h *Handler) AddPeriodToFossil(c *gin.Context) {
 		return
 	}
 
-	periods, err := h.UseCase.GetPeriods(searchName, uint(userID))
+	periods, err := h.UseCase.GetPeriods(searchName, uint(userID), page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -242,6 +250,8 @@ func (h *Handler) AddPeriodToFossil(c *gin.Context) {
 func (h *Handler) RemovePeriodFromFossil(c *gin.Context) {
 	searchName := c.DefaultQuery("searchName", "")
 	periodID, err := strconv.Atoi(c.Param("id_period"))
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "30"))
 	ctxUserID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Идентификатор пользователя отсутствует в контексте"})
@@ -259,7 +269,7 @@ func (h *Handler) RemovePeriodFromFossil(c *gin.Context) {
 		return
 	}
 
-	periods, err := h.UseCase.GetPeriods(searchName, uint(userID))
+	periods, err := h.UseCase.GetPeriods(searchName, uint(userID), page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

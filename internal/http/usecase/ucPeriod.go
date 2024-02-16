@@ -10,14 +10,14 @@ import (
 type PeriodUseCase interface {
 }
 
-func (uc *UseCase) GetPeriods(searchName string, userID uint) (model.PeriodGetResponse, error) {
+func (uc *UseCase) GetPeriods(searchName string, userID uint, page, pageSize int) (model.PeriodGetResponse, error) {
 	if userID < 0 {
 		return model.PeriodGetResponse{}, errors.New("недопустимый ИД пользователя")
 	}
 
 	searchName = strings.Title(searchName + "%")
 
-	periods, err := uc.Repository.GetPeriods(searchName, userID)
+	periods, err := uc.Repository.GetPeriods(searchName, userID, page, pageSize)
 	if err != nil {
 		return model.PeriodGetResponse{}, err
 	}
